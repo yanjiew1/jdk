@@ -89,7 +89,7 @@ LIBAWT_EXTRA_HEADER_DIRS := \
 LIBAWT_CFLAGS := -D__MEDIALIB_OLD_NAMES -D__USE_J2D_NAMES -DMLIB_NO_LIBSUNMATH
 
 ifeq ($(call isTargetOs, windows), true)
-  LIBAWT_CFLAGS += -EHsc -DUNICODE -D_UNICODE -DMLIB_OS64BIT
+  LIBAWT_CFLAGS += -DUNICODE -D_UNICODE -DMLIB_OS64BIT
   LIBAWT_RCFLAGS ?= -I$(TOPDIR)/src/java.base/windows/native/launcher/icons
   LIBAWT_VERSIONINFO_RESOURCE := \
       $(TOPDIR)/src/$(MODULE)/windows/native/libawt/windows/awt.rc
@@ -109,6 +109,7 @@ endif
 # some gcc
 $(eval $(call SetupJdkLibrary, BUILD_LIBAWT, \
     NAME := awt, \
+    LINK_TYPE := $(if $(filter $(OPENJDK_TARGET_OS), windows), C++, C), \
     EXTRA_SRC := $(LIBAWT_EXTRA_SRC), \
     EXCLUDE_FILES := $(LIBAWT_EXCLUDE_FILES), \
     OPTIMIZATION := HIGHEST, \
@@ -147,7 +148,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBAWT, \
         -framework OpenGL, \
     LIBS_windows := advapi32.lib comctl32.lib comdlg32.lib delayimp.lib \
         gdi32.lib imm32.lib kernel32.lib ole32.lib shell32.lib shlwapi.lib \
-        user32.lib uuid.lib winmm.lib winspool.lib, \
+        user32.lib uuid.lib winmm.lib winspool.lib oleaut32.lib, \
     VERSIONINFO_RESOURCE := $(LIBAWT_VERSIONINFO_RESOURCE), \
     EXTRA_RCFLAGS := $(LIBAWT_RCFLAGS), \
     STATIC_LIB_EXCLUDE_OBJS := $(LIBAWT_STATIC_EXCLUDE_OBJS), \
@@ -430,8 +431,8 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBJAWT, \
     EXCLUDE_SRC_PATTERNS := $(LIBJAWT_EXCLUDE_SRC_PATTERNS), \
     OPTIMIZATION := LOW, \
     CFLAGS := $(LIBJAWT_CFLAGS), \
-    CFLAGS_windows := -EHsc -DUNICODE -D_UNICODE, \
-    CXXFLAGS_windows := -EHsc -DUNICODE -D_UNICODE, \
+    CFLAGS_windows := -DUNICODE -D_UNICODE, \
+    CXXFLAGS_windows := -DUNICODE -D_UNICODE, \
     DISABLED_WARNINGS_clang_jawt.m := sign-compare, \
     EXTRA_HEADER_DIRS := $(LIBJAWT_EXTRA_HEADER_DIRS), \
     LDFLAGS_windows := $(LDFLAGS_CXX_JDK), \

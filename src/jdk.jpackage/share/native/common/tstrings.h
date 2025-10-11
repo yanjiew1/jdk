@@ -26,7 +26,7 @@
 #ifndef TSTRINGS_H
 #define TSTRINGS_H
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #   define TSTRINGS_WITH_WCHAR
 #endif
 

@@ -33,6 +33,7 @@
 #include <limits.h>
 #include <wchar.h>
 #include <Winioctl.h>
+#include <errno.h>
 
 #include "jni.h"
 #include "io_util.h"

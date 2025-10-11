@@ -82,6 +82,9 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_HELPER],
         -Wl,-bernotok -Wl,-bcdtors:mbr::s -Wl,-bdatapsize:64k -Wl,-btextpsize:64k -Wl,-bstackpsize:64k"
       BASIC_LDFLAGS_JVM_ONLY="$BASIC_LDFLAGS_JVM_ONLY -Wl,-lC_r -Wl,-bbigtoc"
     fi
+    if test "x$OPENJDK_TARGET_OS" = xwindows; then
+      BASIC_LDFLAGS_JVM_ONLY="-Wl,--exclude-all-symbols -fuse-ld=lld"
+    fi
 
   elif test "x$TOOLCHAIN_TYPE" = xmicrosoft; then
     BASIC_LDFLAGS="-opt:ref"
@@ -90,7 +93,8 @@ AC_DEFUN([FLAGS_SETUP_LDFLAGS_HELPER],
   fi
 
   if (test "x$TOOLCHAIN_TYPE" = xgcc || test "x$TOOLCHAIN_TYPE" = xclang) \
-      && test "x$OPENJDK_TARGET_OS" != xaix; then
+      && test "x$OPENJDK_TARGET_OS" != xaix \
+      && test "x$OPENJDK_TARGET_OS" != xwindows; then
     if test -n "$HAS_NOEXECSTACK"; then
       BASIC_LDFLAGS="$BASIC_LDFLAGS -Wl,-z,noexecstack"
     fi

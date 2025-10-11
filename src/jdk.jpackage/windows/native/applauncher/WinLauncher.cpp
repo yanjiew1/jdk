@@ -84,7 +84,7 @@ std::unique_ptr<Dll> loadDllWithAddDllDirectory(const tstring& dllFullPath) {
     DLL_DIRECTORY_COOKIE res = func(dirPath.c_str());
     if (!res) {
         JP_THROW(SysError(tstrings::any()
-                << "AddDllDirectory(" << dirPath << ") failed", func));
+                << "AddDllDirectory(" << dirPath << ") failed", (const void *) func));
     }
 
     LOG_TRACE(tstrings::any() << "AddDllDirectory(" << dirPath << "): OK");
@@ -159,14 +159,14 @@ public:
         UniqueHandle threadHandle = UniqueHandle(CreateThread(NULL, 0, worker,
                                     static_cast<LPVOID>(&instance), 0, NULL));
         if (threadHandle.get() == NULL) {
-            JP_THROW(SysError("CreateThread() failed", CreateThread));
+            JP_THROW(SysError("CreateThread() failed", (const void *) CreateThread));
         }
 
         MSG msg;
         BOOL bRet;
         while((bRet = GetMessage(&msg, instance.hwnd, 0, 0 )) != 0) {
             if (bRet == -1) {
-                JP_THROW(SysError("GetMessage() failed", GetMessage));
+                JP_THROW(SysError("GetMessage() failed", (const void *) GetMessage));
             } else {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
@@ -178,7 +178,7 @@ public:
         const DWORD res = ::WaitForSingleObject(threadHandle.get(), INFINITE);
         if (WAIT_FAILED ==  res) {
             JP_THROW(SysError("WaitForSingleObject() failed",
-                                                        WaitForSingleObject));
+                                                        (const void *) WaitForSingleObject));
         }
 
         LOG_TRACE(tstrings::any()
@@ -195,7 +195,7 @@ private:
         hwnd = CreateWindowEx(0, _T("STATIC"), _T(""), 0, 0, 0, 0, 0,
                               HWND_MESSAGE, NULL, GetModuleHandle(NULL), NULL);
         if (!hwnd) {
-            JP_THROW(SysError("CreateWindowEx() failed", CreateWindowEx));
+            JP_THROW(SysError("CreateWindowEx() failed", (const void *) CreateWindowEx));
         }
     }
 
@@ -211,7 +211,7 @@ private:
 
         JP_TRY;
         if (!PostMessage(hwnd, WM_QUIT, 0, 0)) {
-            JP_THROW(SysError("PostMessage(WM_QUIT) failed", PostMessage));
+            JP_THROW(SysError("PostMessage(WM_QUIT) failed", (const void *) PostMessage));
         }
         return;
         JP_CATCH_ALL;
@@ -261,7 +261,7 @@ void enableConsoleCtrlHandler(bool enable) {
         JP_THROW(SysError(tstrings::any() << "SetConsoleCtrlHandler(NULL, "
                                             << (enable ? "FALSE" : "TRUE")
                                             << ") failed",
-                                                    SetConsoleCtrlHandler));
+                                                    (const void *) SetConsoleCtrlHandler));
     }
 }
 
@@ -301,7 +301,7 @@ void launchApp() {
         UniqueHandle jobHandle(CreateJobObject(NULL, NULL));
         if (jobHandle.get() == NULL) {
             JP_THROW(SysError(tstrings::any() << "CreateJobObject() failed",
-                                                            CreateJobObject));
+                                                            (const void *) CreateJobObject));
         }
         JOBOBJECT_EXTENDED_LIMIT_INFORMATION jobInfo = { };
         jobInfo.BasicLimitInformation.LimitFlags =
@@ -310,7 +310,7 @@ void launchApp() {
                 JobObjectExtendedLimitInformation, &jobInfo, sizeof(jobInfo))) {
             JP_THROW(SysError(tstrings::any() <<
                                             "SetInformationJobObject() failed",
-                                                    SetInformationJobObject));
+                                                    (const void *) SetInformationJobObject));
         }
 
         Executor exec(launcherPath);

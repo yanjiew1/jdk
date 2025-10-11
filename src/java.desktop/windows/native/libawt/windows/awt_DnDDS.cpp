@@ -23,6 +23,7 @@
  * questions.
  */
 
+#ifdef _MSC_VER
 #pragma push_macro("bad_alloc")
 //"bad_alloc" would be introduced in STL as "std::zbad_alloc" and discarded by linker
 //by this action we avoid the conflict with AWT implementation of "bad_alloc"
@@ -37,6 +38,9 @@ void * operator new(size_t size) {return operator new(size, "stl", 1);}
 #include <map>
 
 #pragma pop_macro("bad_alloc")
+#else
+#include <map>
+#endif
 //"bad_alloc" is undefined from here
 
 #include <shlobj.h>

@@ -199,7 +199,7 @@ endef
 # On non-Windows platforms this instead does a copy, so that $2 can still be used
 # as a depenendency of a make rule, instead of having to conditionally depend on
 # $1 instead, based on the target platform.
-ifeq ($(call isTargetOs, windows), true)
+ifeq ($(call isBuildOs, windows), true)
   FixPath = \
     $(strip $(subst \,\\, $(shell $(FIXPATH_BASE) print $(patsubst $(FIXPATH), , $1))))
   FixPathFile = \

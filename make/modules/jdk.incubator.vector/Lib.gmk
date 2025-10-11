@@ -33,13 +33,21 @@ ifeq ($(INCLUDE_COMPILER2), true)
   ## Build libjsvml
   ##############################################################################
 
-  ifeq ($(call isTargetOs, linux windows)+$(call isTargetCpu, x86_64), true+true)
+  define setupLibJsvml
     $(eval $(call SetupJdkLibrary, BUILD_LIBJSVML, \
         NAME := jsvml, \
         LDFLAGS_windows := -defaultlib:msvcrt, \
     ))
 
     TARGETS += $(BUILD_LIBJSVML)
+  endef
+
+  ifeq ($(call isTargetCpu, x86_64), true)
+    ifeq ($(call isTargetOs, linux), true)
+      $(eval setupLibJsvml)
+    else ifeq ($(call isTargetOs, windows)+$(call isCompiler, microsoft), true+true)
+      $(eval setupLibJsvml)
+    endif
   endif
 
   ##############################################################################

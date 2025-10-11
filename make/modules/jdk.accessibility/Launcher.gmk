@@ -36,9 +36,11 @@ ifeq ($(call isTargetOs, windows), true)
 
   $(eval $(call SetupJdkExecutable, BUILD_JABSWITCH, \
       NAME := jabswitch, \
+      LINK_TYPE := $(if $(filter $(OPENJDK_TARGET_OS), windows), C++, C), \
       CXXFLAGS_FILTER_OUT := -Zc:wchar_t-, \
-      CXXFLAGS := -Zc:wchar_t -analyze- -Od -Gd -D_WINDOWS -D_UNICODE \
-          -DUNICODE -RTC1 -EHsc, \
+      CXXFLAGS := -D_WINDOWS -D_UNICODE -DUNICODE, \
+      CXXFLAGS_clang := -O0, \
+      CXXFLAGS_microsoft := -Zc:wchar_t -analyze- -Od -Gd -RTC1, \
       DISABLED_WARNINGS_microsoft_jabswitch.cpp := 4267 4996, \
       LIBS_windows := advapi32.lib user32.lib version.lib, \
       VERSIONINFO_RESOURCE := \
@@ -55,14 +57,16 @@ ifeq ($(call isTargetOs, windows), true)
 
   $(eval $(call SetupJdkExecutable, BUILD_JACCESSINSPECTOR, \
       NAME := jaccessinspector, \
+      LINK_TYPE := $(if $(filter $(OPENJDK_TARGET_OS), windows), C++, C), \
       EXTRA_SRC := \
           bridge \
           common \
           toolscommon, \
       EXTRA_HEADER_DIRS := include/bridge, \
-      CFLAGS := -DACCESSBRIDGE_ARCH_64 -EHsc, \
-      CXXFLAGS := -DACCESSBRIDGE_ARCH_64 -EHsc, \
-      LDFLAGS_windows := -stack:655360, \
+      CFLAGS := -DACCESSBRIDGE_ARCH_64, \
+      CXXFLAGS := -DACCESSBRIDGE_ARCH_64, \
+      LDFLAGS_clang := -Wl$(COMMA)--stack=655360, \
+      LDFLAGS_microsoft := -stack:655360, \
       LIBS_windows := advapi32.lib user32.lib, \
       VERSIONINFO_RESOURCE := \
           $(ACCESSIBILITY_SRCDIR)/jaccessinspector/jaccessinspectorWindow.rc, \
@@ -76,14 +80,16 @@ ifeq ($(call isTargetOs, windows), true)
 
   $(eval $(call SetupJdkExecutable, BUILD_JACCESSWALKER, \
       NAME := jaccesswalker, \
+      LINK_TYPE := $(if $(filter $(OPENJDK_TARGET_OS), windows), C++, C), \
       EXTRA_SRC := \
           bridge \
           common \
           toolscommon, \
       EXTRA_HEADER_DIRS := include/bridge, \
-      CFLAGS := -DACCESSBRIDGE_ARCH_64 -EHsc, \
-      CXXFLAGS := -DACCESSBRIDGE_ARCH_64 -EHsc, \
-      LDFLAGS_windows := -stack:655360, \
+      CFLAGS := -DACCESSBRIDGE_ARCH_64, \
+      CXXFLAGS := -DACCESSBRIDGE_ARCH_64, \
+      LDFLAGS_clang := -Wl$(COMMA)--stack=655360, \
+      LDFLAGS_microsoft := -stack:655360, \
       LIBS_windows := advapi32.lib comctl32.lib gdi32.lib user32.lib, \
       VERSIONINFO_RESOURCE := \
           $(ACCESSIBILITY_SRCDIR)/jaccesswalker/jaccesswalkerWindow.rc, \

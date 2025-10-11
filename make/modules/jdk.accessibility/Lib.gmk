@@ -38,12 +38,14 @@ ifeq ($(call isTargetOs, windows), true)
 
   $(eval $(call SetupJdkLibrary, BUILD_LIBJAVAACCESSBRIDGE, \
       NAME := javaaccessbridge, \
+      LINK_TYPE := C++, \
       EXTRA_SRC := common, \
       OPTIMIZATION := LOW, \
       ONLY_EXPORTED := true, \
       DISABLED_WARNINGS_microsoft := 4311 4302 4312, \
-      CXXFLAGS_FILTER_OUT := -MD, \
-      CXXFLAGS := -MT -DACCESSBRIDGE_ARCH_64, \
+      CXXFLAGS_FILTER_OUT_microsoft := -MD, \
+      CXXFLAGS := -DACCESSBRIDGE_ARCH_64, \
+      CXXFLAGS_microsoft := -MT, \
       EXTRA_HEADER_DIRS := \
           include/bridge \
           java.desktop:include, \
@@ -63,6 +65,7 @@ ifeq ($(call isTargetOs, windows), true)
 
   $(eval $(call SetupJdkLibrary, BUILD_LIBWINDOWSACCESSBRIDGE, \
       NAME := windowsaccessbridge-64, \
+      LINK_TYPE := C++, \
       SRC := libwindowsaccessbridge, \
       EXTRA_SRC := common, \
       OPTIMIZATION := LOW, \

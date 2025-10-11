@@ -81,7 +81,9 @@ AC_DEFUN_ONCE([LIB_SETUP_STD_LIBS],
   AC_SUBST(LIBCXX)
 
   # Setup Windows runtime dlls
-  if test "x$OPENJDK_TARGET_OS" = "xwindows"; then
+  if test "x$OPENJDK_TARGET_OS"."$TOOLCHAIN_TYPE" = xwindows.microsoft; then
     TOOLCHAIN_SETUP_VS_RUNTIME_DLLS
   fi
+
+  # TODO: Add MinGW runtime libraries if needed
 ])

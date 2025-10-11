@@ -23,7 +23,18 @@
  * questions.
  */
 
+#include <stddef.h>
+
+#ifdef __MINGW32__
+typedef int (__cdecl *_PNH)(size_t);
+__declspec(dllimport)
+extern "C" int __cdecl _set_new_mode(int _NewMode);
+__declspec(dllimport)
+extern "C" _PNH __cdecl _set_new_handler(_PNH _NewHandler);
+#else
 #include <new.h>
+#endif
+
 #include <stdio.h>
 #include "awt_new.h"
 #include "awt_Toolkit.h"
@@ -45,7 +56,6 @@
   static FILE *logfile;
   static DWORD thread_seeded = TLS_OUT_OF_INDEXES;
 #endif
-
 
 void
 NewHandler::init() {

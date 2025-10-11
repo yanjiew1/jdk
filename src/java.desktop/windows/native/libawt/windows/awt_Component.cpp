@@ -3580,7 +3580,7 @@ UINT AwtComponent::WindowsKeyToJavaChar(UINT wkey, UINT modifiers, TransOps ops,
         } // ctrlIsDown
     } // modifiers
 
-    WORD wChar[2];
+    WCHAR wChar[2];
     int converted = 1;
     UINT ch = ::MapVirtualKeyEx(wkey, 2, GetKeyboardLayout());
     if (ch & 0x80000000) {

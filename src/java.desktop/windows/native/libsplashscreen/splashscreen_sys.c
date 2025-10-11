@@ -55,6 +55,10 @@
 
 #define BUFF_SIZE 1024
 
+#ifdef __GNUC__
+#define alloca __builtin_alloca
+#endif
+
 /* Could use npt but decided to cut down on linked code size */
 char* SplashConvertStringAlloc(const char* in, int *size) {
     int len, outChars, rc;

@@ -180,7 +180,11 @@ AC_DEFUN([DEBUG_PREFIX_MAP_GCC_INCLUDE_PATHS],
 AC_DEFUN([FLAGS_SETUP_WARNINGS],
 [
   # Set default value.
-  WARNINGS_AS_ERRORS_DEFAULT=true
+  if test "x$OPENJDK_TARGET_OS" = xwindows && test "x$TOOLCHAIN_TYPE" != xmicrosoft; then
+    WARNINGS_AS_ERRORS_DEFAULT=false
+  else
+    WARNINGS_AS_ERRORS_DEFAULT=true
+  fi
 
   UTIL_ARG_ENABLE(NAME: warnings-as-errors, DEFAULT: $WARNINGS_AS_ERRORS_DEFAULT,
       RESULT: WARNINGS_AS_ERRORS,
@@ -430,7 +434,12 @@ AC_DEFUN([FLAGS_SETUP_CFLAGS_HELPER],
   elif test "x$OPENJDK_TARGET_OS" = xbsd; then
     CFLAGS_OS_DEF_JDK="-D_ALLBSD_SOURCE"
   elif test "x$OPENJDK_TARGET_OS" = xwindows; then
-    CFLAGS_OS_DEF_JVM="-D_WINDOWS -DWIN32 -D_JNI_IMPLEMENTATION_"
+    # _WIN32_WINNT=0x0602 means access APIs for Windows 8 and above. See
+    # https://docs.microsoft.com/en-us/cpp/porting/modifying-winver-and-win32-winnt?view=msvc-170
+    OS_CFLAGS="-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0602 -D_WINDOWS -DWIN32 -D_WIN32 \
+        -D_CRT_DECLARE_NONSTDC_NAMES -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS"
+    CFLAGS_OS_DEF_JDK="-DIAL"
+    CFLAGS_OS_DEF_JVM="-DNOMINMAX -D_JNI_IMPLEMENTATION_"
   fi
 
   CFLAGS_OS_DEF_JDK="$CFLAGS_OS_DEF_JDK -D$OPENJDK_TARGET_OS_UPPERCASE"
@@ -477,13 +486,6 @@ AC_DEFUN([FLAGS_SETUP_CFLAGS_HELPER],
     ALWAYS_DEFINES_JVM="-D_GNU_SOURCE -D_REENTRANT"
   elif test "x$TOOLCHAIN_TYPE" = xclang; then
     ALWAYS_DEFINES_JVM="-D_GNU_SOURCE"
-  elif test "x$TOOLCHAIN_TYPE" = xmicrosoft; then
-    # _WIN32_WINNT=0x0602 means access APIs for Windows 8 and above. See
-    # https://docs.microsoft.com/en-us/cpp/porting/modifying-winver-and-win32-winnt?view=msvc-170
-    ALWAYS_DEFINES="-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0602 \
-        -D_CRT_DECLARE_NONSTDC_NAMES -D_CRT_NONSTDC_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS"
-    ALWAYS_DEFINES_JDK="$ALWAYS_DEFINES -DWIN32 -DIAL"
-    ALWAYS_DEFINES_JVM="$ALWAYS_DEFINES -DNOMINMAX"
   fi
 
   ##############################################################################
@@ -542,8 +544,8 @@ AC_DEFUN([FLAGS_SETUP_CFLAGS_HELPER],
     TOOLCHAIN_CFLAGS_JDK="$TOOLCHAIN_CFLAGS_JDK -fvisibility=hidden -fstack-protector"
 
   elif test "x$TOOLCHAIN_TYPE" = xmicrosoft; then
-    TOOLCHAIN_CFLAGS_JVM="-nologo -MD -Zc:preprocessor -Zc:inline -Zc:throwingNew -permissive- -MP"
-    TOOLCHAIN_CFLAGS_JDK="-nologo -MD -Zc:preprocessor -Zc:inline -Zc:throwingNew -permissive- -Zc:wchar_t-"
+    TOOLCHAIN_CFLAGS_JVM="-nologo -EHsc -MD -Zc:preprocessor -Zc:inline -Zc:throwingNew -permissive- -MP"
+    TOOLCHAIN_CFLAGS_JDK="-nologo -EHsc -MD -Zc:preprocessor -Zc:inline -Zc:throwingNew -permissive- -Zc:wchar_t-"
   fi
 
   # Set character encoding in source
@@ -607,6 +609,10 @@ AC_DEFUN([FLAGS_SETUP_CFLAGS_HELPER],
   OS_CFLAGS="$OS_CFLAGS -DLIBC=$OPENJDK_TARGET_LIBC"
   if test "x$OPENJDK_TARGET_LIBC" = xmusl; then
     OS_CFLAGS="$OS_CFLAGS -DMUSL_LIBC"
+  fi
+
+  if test "x$OPENJDK_TARGET_OS" = xwindows && test "x$TOOLCHAIN_TYPE" != xmicrosoft; then
+    OS_CFLAGS="$OS_CFLAGS -fms-extensions"
   fi
 
   # Where does this really belong??

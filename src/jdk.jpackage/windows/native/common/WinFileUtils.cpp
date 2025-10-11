@@ -180,7 +180,7 @@ void createDir(const tstring path, LPSECURITY_ATTRIBUTES saAttr,
         // if saAttr is specified, fail even if the directory exists
         if (saAttr != NULL || !isDirectory(path)) {
             JP_THROW(SysError(tstrings::any() << "CreateDirectory("
-                << path << ") failed", CreateDirectory, createDirectoryErr));
+                << path << ") failed", (const void *) CreateDirectory, createDirectoryErr));
         }
     }
 }
@@ -206,7 +206,7 @@ void copyFile(const tstring& fromPath, const tstring& toPath,
             (failIfExists ? TRUE : FALSE))) {
         JP_THROW(SysError(tstrings::any()
                 << "CopyFile(" << fromPath << ", " << toPath << ", "
-                << failIfExists << ") failed", CopyFile));
+                << failIfExists << ") failed", (const void *) CopyFile));
     }
     LOG_TRACE(tstrings::any() << "Copied [" << fromPath << "] file to ["
             << toPath << "]");
@@ -221,7 +221,7 @@ void moveFileImpl(const tstring& fromPath, const tstring& toPath,
     if (!MoveFileEx(fromPath.c_str(), toPath.empty() ? NULL : toPath.c_str(),
             flags)) {
         JP_THROW(SysError(tstrings::any() << "MoveFileEx(" << fromPath
-                << ", " << toPath << ", " << flags << ") failed", MoveFileEx));
+                << ", " << toPath << ", " << flags << ") failed", (const void *) MoveFileEx));
     }
 
     const bool onReboot = 0 != (flags & MOVEFILE_DELAY_UNTIL_REBOOT);
@@ -269,7 +269,7 @@ void deleteFile(const tstring &path)
 {
     if (!deleteFile(path, std::nothrow)) {
         JP_THROW(SysError(tstrings::any()
-                << "DeleteFile(" << path << ") failed", DeleteFile));
+                << "DeleteFile(" << path << ") failed", (const void *) DeleteFile));
     }
 }
 
@@ -312,7 +312,7 @@ bool deleteFile(const tstring &path, const std::nothrow_t &) throw()
                 LOG_WARNING(SysError(tstrings::any()
                             << "Failed to discard R/O attribute from ["
                             << path << "] file. File will not be deleted",
-                            SetFileAttributes).what());
+                            (const void *) SetFileAttributes).what());
                 SetLastError(status);
             }
         }
@@ -325,7 +325,7 @@ void deleteDirectory(const tstring &path)
 {
     if (!deleteDirectory(path, std::nothrow)) {
         JP_THROW(SysError(tstrings::any()
-                << "RemoveDirectory(" << path << ") failed", RemoveDirectory));
+                << "RemoveDirectory(" << path << ") failed", (const void *) RemoveDirectory));
     }
 }
 
@@ -494,7 +494,7 @@ void iterateDirectory(const tstring &dirPath, DirectoryCallback& callback)
         // if the parent directory does not exist
         if (GetLastError() != ERROR_FILE_NOT_FOUND) {
             JP_THROW(SysError(tstrings::any() << "FindFirstFile("
-                    << dirPath << ") failed", FindFirstFile));
+                    << dirPath << ") failed", (const void *) FindFirstFile));
         }
         return;
     }
@@ -516,7 +516,7 @@ void iterateDirectory(const tstring &dirPath, DirectoryCallback& callback)
     // expect GetLastError() == ERROR_NO_MORE_FILES
     if (GetLastError() != ERROR_NO_MORE_FILES) {
         JP_THROW(SysError(tstrings::any() << "FindNextFile("
-                << dirPath << ") failed", FindNextFile));
+                << dirPath << ") failed", (const void *) FindNextFile));
     }
 }
 
@@ -672,7 +672,7 @@ tstring toShortPath(const tstring& path) {
     const DWORD len = GetShortPathName(path.c_str(), nullptr, 0);
     if (0 == len) {
         JP_THROW(SysError(tstrings::any() << "GetShortPathName("
-                << path << ") failed", GetShortPathName));
+                << path << ") failed", (const void *) GetShortPathName));
     }
 
     std::vector<TCHAR> buf;
@@ -681,7 +681,7 @@ tstring toShortPath(const tstring& path) {
                                             static_cast<DWORD>(buf.size()));
     if (copied != buf.size() - 1) {
         JP_THROW(SysError(tstrings::any() << "GetShortPathName("
-                << path << ") failed", GetShortPathName));
+                << path << ") failed", (const void *) GetShortPathName));
     }
 
     return tstring(buf.data(), buf.size() - 1);

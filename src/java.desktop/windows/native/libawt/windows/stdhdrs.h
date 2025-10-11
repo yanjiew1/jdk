@@ -40,7 +40,16 @@
 // Don't #include <new> because that makes awt.dll dependent on
 // msvcp50.dll. Instead, we've replicated the parts of <new>
 // we need in alloc.h.
-// #include <new>
+#ifndef _MSC_VER
+#include <new>
+#endif
+
+#ifndef min
+#define min(a,b) ((a) <= (b)? (a):(b))
+#endif
+#ifndef max
+#define max(a,b) ((a) >= (b)? (a):(b))
+#endif
 
 extern "C" {
 

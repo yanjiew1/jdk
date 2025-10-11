@@ -150,6 +150,10 @@ AC_DEFUN_ONCE([LIB_SETUP_LIBRARIES],
     BASIC_JVM_LIBS="$BASIC_JVM_LIBS kernel32.lib user32.lib gdi32.lib winspool.lib \
         comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib powrprof.lib uuid.lib \
         ws2_32.lib winmm.lib version.lib psapi.lib"
+    if test "x$TOOLCHAIN_TYPE" != xmicrosoft; then
+      # Convert .lib names to -l names for non-MS toolchains
+      BASIC_JVM_LIBS=`echo $BASIC_JVM_LIBS | sed -E 's/([[^ ]]*)\.lib/-l\1/g'`
+    fi
   fi
   LIB_SETUP_JVM_LIBS(BUILD)
   LIB_SETUP_JVM_LIBS(TARGET)
