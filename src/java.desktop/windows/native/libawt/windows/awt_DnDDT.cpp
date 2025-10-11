@@ -38,6 +38,9 @@
 #include "awt_DnDDT.h"
 #include "awt_DnDDS.h"
 
+#ifdef __MINGW32__
+_COM_SMARTPTR_TYPEDEF(IStream,__uuidof(IStream));
+#endif
 
 // forwards
 

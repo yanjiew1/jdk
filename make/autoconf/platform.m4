@@ -593,9 +593,9 @@ AC_DEFUN([PLATFORM_SETUP_LEGACY_VARS_HELPER],
 
   # For historical reasons, the OS include directories have odd names.
   OPENJDK_$1_OS_INCLUDE_SUBDIR="$OPENJDK_TARGET_OS"
-  if test "x$OPENJDK_TARGET_OS" = "xwindows"; then
+  if test "x$OPENJDK_$1_OS" = "xwindows"; then
     OPENJDK_$1_OS_INCLUDE_SUBDIR="win32"
-  elif test "x$OPENJDK_TARGET_OS" = "xmacosx"; then
+  elif test "x$OPENJDK_$1_OS" = "xmacosx"; then
     OPENJDK_$1_OS_INCLUDE_SUBDIR="darwin"
   fi
   AC_SUBST(OPENJDK_$1_OS_INCLUDE_SUBDIR)

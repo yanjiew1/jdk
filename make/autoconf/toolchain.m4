@@ -41,7 +41,7 @@ VALID_TOOLCHAINS_all="gcc clang microsoft"
 VALID_TOOLCHAINS_linux="gcc clang"
 VALID_TOOLCHAINS_macosx="clang"
 VALID_TOOLCHAINS_aix="clang"
-VALID_TOOLCHAINS_windows="microsoft"
+VALID_TOOLCHAINS_windows="microsoft clang"
 
 # Toolchain descriptions
 TOOLCHAIN_DESCRIPTION_clang="clang/LLVM"
@@ -717,14 +717,15 @@ AC_DEFUN_ONCE([TOOLCHAIN_DETECT_TOOLCHAIN_EXTRA],
     # Setup the resource compiler (RC)
     UTIL_LOOKUP_TOOLCHAIN_PROGS(RC, rc)
     UTIL_LOOKUP_TOOLCHAIN_PROGS(DUMPBIN, dumpbin)
-  fi
-
-  if test "x$OPENJDK_TARGET_OS" != xwindows; then
+  else
     UTIL_LOOKUP_TOOLCHAIN_PROGS(STRIP, strip)
     if test "x$TOOLCHAIN_TYPE" = xgcc; then
       UTIL_LOOKUP_TOOLCHAIN_PROGS(NM, nm gcc-nm)
     else
       UTIL_LOOKUP_TOOLCHAIN_PROGS(NM, nm)
+    fi
+    if test "x$OPENJDK_TARGET_OS" = xwindows; then
+      UTIL_LOOKUP_TOOLCHAIN_PROGS(RC, windres llvm-windres)
     fi
   fi
 

@@ -31,15 +31,14 @@
 // globally used constants & types, class (forward)
 // declarations and a few frequently used utility functions.
 
-#include <alloca.h>
+#define _USE_MATH_DEFINES
+
 #include <ctype.h>
-#include <dlfcn.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
 #include <limits.h>
 #include <math.h>
-#include <pthread.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -58,6 +57,9 @@
 #include <wchar.h>
 
 #if defined(LINUX) || defined(_ALLBSD_SOURCE) || defined(_AIX)
+#include <alloca.h>
+#include <pthread.h>
+#include <dlfcn.h>
 #include <signal.h>
 #ifndef __OpenBSD__
 #include <ucontext.h>
@@ -72,7 +74,7 @@
 // checking for nanness
 #if defined(__APPLE__)
 inline int g_isnan(double f) { return isnan(f); }
-#elif defined(LINUX) || defined(_ALLBSD_SOURCE) || defined(_AIX)
+#elif defined(LINUX) || defined(_ALLBSD_SOURCE) || defined(_AIX) || defined(_WIN32)
 inline int g_isnan(float  f) { return isnan(f); }
 inline int g_isnan(double f) { return isnan(f); }
 #else

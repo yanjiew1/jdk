@@ -390,7 +390,7 @@ function convert_at_file() {
 
     while read line; do
       convert_path "$line"
-      echo "$result" >> $tempdir/atfile
+      echo "${result//'\'/'\\'}" >> $tempdir/atfile
     done < $infile
     convert_path "$tempdir/atfile"
     result="@$result"

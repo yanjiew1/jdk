@@ -42,6 +42,10 @@
  #include <net/if.h>
 #endif
 
+#if defined(interface) && defined(__MINGW32__)
+#undef interface
+#endif
+
 /*
  * The Socket Transport Library.
  *

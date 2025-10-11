@@ -1816,7 +1816,7 @@ JavaAccessBridge::firePropertyDescriptionChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->oldDescription, stringBytes, (sizeof(pkg->oldDescription) / sizeof(wchar_t)));
-                env->ReleaseStringChars(oldValue, stringBytes);
+                env->ReleaseStringChars(oldValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->oldDescription, L"(null)", (sizeof(pkg->oldDescription) / sizeof(wchar_t)));
             }
@@ -1833,7 +1833,7 @@ JavaAccessBridge::firePropertyDescriptionChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->newDescription, stringBytes, (sizeof(pkg->newDescription) / sizeof(wchar_t)));
-                env->ReleaseStringChars(newValue, stringBytes);
+                env->ReleaseStringChars(newValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->newDescription, L"(null)", (sizeof(pkg->newDescription) / sizeof(wchar_t)));
             }
@@ -1902,7 +1902,7 @@ JavaAccessBridge::firePropertyNameChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->oldName, stringBytes, (sizeof(pkg->oldName) / sizeof(wchar_t)));
-                env->ReleaseStringChars(oldValue, stringBytes);
+                env->ReleaseStringChars(oldValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->oldName, L"(null)", (sizeof(pkg->oldName) / sizeof(wchar_t)));
             }
@@ -1919,7 +1919,7 @@ JavaAccessBridge::firePropertyNameChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->newName, stringBytes, (sizeof(pkg->newName) / sizeof(wchar_t)));
-                env->ReleaseStringChars(newValue, stringBytes);
+                env->ReleaseStringChars(newValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->newName, L"(null)", (sizeof(pkg->newName) / sizeof(wchar_t)));
             }
@@ -2039,7 +2039,7 @@ JavaAccessBridge::firePropertyStateChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->oldState, stringBytes, (sizeof(pkg->oldState) / sizeof(wchar_t)));
-                env->ReleaseStringChars(oldValue, stringBytes);
+                env->ReleaseStringChars(oldValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->oldState, L"(null)", (sizeof(pkg->oldState) / sizeof(wchar_t)));
             }
@@ -2056,7 +2056,7 @@ JavaAccessBridge::firePropertyStateChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->newState, stringBytes, (sizeof(pkg->newState) / sizeof(wchar_t)));
-                env->ReleaseStringChars(newValue, stringBytes);
+                env->ReleaseStringChars(newValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->newState, L"(null)", (sizeof(pkg->newState) / sizeof(wchar_t)));
             }
@@ -2176,7 +2176,7 @@ JavaAccessBridge::firePropertyValueChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->oldValue, stringBytes, (sizeof(pkg->oldValue) / sizeof(wchar_t)));
-                env->ReleaseStringChars(oldValue, stringBytes);
+                env->ReleaseStringChars(oldValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->oldValue, L"(null)", (sizeof(pkg->oldValue) / sizeof(wchar_t)));
             }
@@ -2193,7 +2193,7 @@ JavaAccessBridge::firePropertyValueChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->newValue, stringBytes, (sizeof(pkg->newValue) / sizeof(wchar_t)));
-                env->ReleaseStringChars(newValue, stringBytes);
+                env->ReleaseStringChars(newValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->newValue, L"(null)", (sizeof(pkg->newValue) / sizeof(wchar_t)));
             }
@@ -2431,7 +2431,7 @@ JavaAccessBridge::firePropertyTableModelChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->oldValue, stringBytes, (sizeof(pkg->oldValue) / sizeof(wchar_t)));
-                env->ReleaseStringChars(oldValue, stringBytes);
+                env->ReleaseStringChars(oldValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->oldValue, L"(null)", (sizeof(pkg->oldValue) / sizeof(wchar_t)));
             }
@@ -2448,7 +2448,7 @@ JavaAccessBridge::firePropertyTableModelChange(JNIEnv *env, jobject callingObj,
                     return;
                 }
                 wcsncpy(pkg->newValue, stringBytes, (sizeof(pkg->newValue) / sizeof(wchar_t)));
-                env->ReleaseStringChars(newValue, stringBytes);
+                env->ReleaseStringChars(newValue, (const jchar *)stringBytes);
             } else {
                 wcsncpy(pkg->newValue, L"(null)", (sizeof(pkg->newValue) / sizeof(wchar_t)));
             }
@@ -2578,7 +2578,7 @@ extern "C" {        // event stuff from AccessBridge.h, generated by JNI
             return;
         }
         wPrintJavaDebugString(L"AccessBridge.java: %ls", stringBytes);
-        env->ReleaseStringChars(debugStr, stringBytes);
+        env->ReleaseStringChars(debugStr, (const jchar *)stringBytes);
     }
 
     JNIEXPORT void JNICALL

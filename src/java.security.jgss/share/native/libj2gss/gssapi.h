@@ -295,7 +295,7 @@ typedef int             gss_cred_usage_t;
  * Finally, function prototypes for the GSSAPI routines.
  */
 
-#if defined (_WIN32) && defined (_MSC_VER)
+#if defined (_WIN32)
 # ifdef GSS_DLL_FILE
 #  define GSS_DLLIMP __declspec(dllexport)
 # else

@@ -36,20 +36,20 @@ ifeq ($(call isTargetOs, macosx), true)
       -mstack-alignment=16 -fPIC
   LIBSAPROC_EXTRA_SRC := $(SUPPORT_OUTPUTDIR)/gensrc/jdk.hotspot.agent
 else ifeq ($(call isTargetOs, windows), true)
-  LIBSAPROC_CFLAGS := -D_WINDOWS -D_DEBUG -D_CONSOLE -EHsc
+  LIBSAPROC_CFLAGS := -D_WINDOWS -D_DEBUG -D_CONSOLE
   ifeq ($(call isTargetCpu, x86_64), true)
     LIBSAPROC_CXXFLAGS := -DWIN64
   else
     # Only add /RTC1 flag for debug builds as it's
     # incompatible with release type builds. See
     # https://msdn.microsoft.com/en-us/library/8wtf2dfz.aspx
-    ifeq ($(DEBUG_LEVEL), slowdebug)
+    ifeq ($(DEBUG_LEVEL)+$(call isCompiler, microsoft), slowdebug+true)
       LIBSAPROC_CXXFLAGS := -RTC1
     endif
   endif
 endif
 
-ifeq ($(call isTargetOs, linux), true)
+ifeq ($(call isTargetOs, linux windows), true)
   LIBSAPROC_LINK_TYPE := C++
 else
   LIBSAPROC_LINK_TYPE := C

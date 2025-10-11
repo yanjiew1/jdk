@@ -36,6 +36,15 @@ ifeq ($(INCLUDE), true)
 # that should be included in the compilation.
 ################################################################################
 
+FIX_DEPS_FILE_SED_PATTERN :=
+ifeq ($(call isTargetOs, windows), true)
+  FIX_DEPS_FILE_SED_PATTERN += \
+    -e 's|\\|/|g' \
+    -e "s|$(subst \,/,$(WINENV_ROOT))||Ig" \
+    -e "s?([[:space:]]|^)([a-zA-Z]):/?\1$(WINENV_PREFIX)/\2/?g" \
+    -e 's|/[[:space:]]*$$$$|\\|g'
+endif
+
 ################################################################################
 # When absolute paths are not allowed in the output, and the compiler does not
 # support any options to avoid it, we need to rewrite compile commands to use
@@ -97,21 +106,22 @@ ifeq ($(REWRITE_PATHS_RELATIVE), true)
   # that newline sequence as a separate variable and add the closing quote behind
   # a comment.
   sed_newline := \'$$'\n''#'
-  define fix-deps-file
-	$(SED) \
-	    -e 's|\([^ ]\) \{1,\}\([^\\:]\)|\1 \\$(sed_newline) \2|g' \
-	    $1.tmp \
-	    | $(SED) \
-	        -e 's|^\([ ]*\)\./|\1|' \
-	        -e '/^[ ]*[^/ ]/s|^\([ ]*\)|\1$(WORKSPACE_ROOT)/|' \
-	        > $1
-  endef
+  FIX_DEPS_FILE_SED_PATTERN += \
+    -e 's|\([^ ]\) \{1,\}\([^\\:]\)|\1 \\$(sed_newline) \2|g' \
+    -e 's|^\([ ]*\)\./|\1|' \
+    -e '/^[ ]*[^/ ]/s|^\([ ]*\)|\1$(WORKSPACE_ROOT)/|'
 else
   # By default the MakeCommandRelative macro does nothing.
   MakeCommandRelative = $1
+endif
 
-  # No adjustment is needed.
+ifdef FIX_DEPS_FILE_SED_PATTERN
   define fix-deps-file
+	$(SED) -E $(FIX_DEPS_FILE_SED_PATTERN) $1.tmp > $1
+  endef
+else
+  define fix-deps-file
+	# No adjustment is needed.
 	$(MV) $1.tmp $1
   endef
 endif
